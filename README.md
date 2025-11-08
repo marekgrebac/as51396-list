@@ -61,7 +61,8 @@ The project uses only publicly available BGP information.
 ## ✅ Usage
 
 You can download these lists directly:
-```curl -s https://raw.githubusercontent.com/marekgrebac/as51396-list/main/as51396-full.txt
+```
+curl -s https://raw.githubusercontent.com/marekgrebac/as51396-list/main/as51396-full.txt
 curl -s https://raw.githubusercontent.com/marekgrebac/as51396-list/main/as51396-ipv4.txt
 curl -s https://raw.githubusercontent.com/marekgrebac/as51396-list/main/as51396-ipv6.txt
 ```
