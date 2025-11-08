@@ -75,36 +75,6 @@ Below are simple examples for automatically blocking or isolating traffic from A
 
 ---
 
-## 🔁 Daily Auto-Update Script (Linux)
-
-Create:
-
-`/usr/local/bin/update-as51396.sh`
-
-```bash
-#!/bin/bash
-
-BASE="/etc/as51396"
-mkdir -p "$BASE"
-
-curl -s -o "$BASE/as51396-full.txt" \
- https://raw.githubusercontent.com/marekgrebac/as51396-list/main/as51396-full.txt
-
-curl -s -o "$BASE/as51396-ipv4.txt" \
- https://raw.githubusercontent.com/marekgrebac/as51396-list/main/as51396-ipv4.txt
-
-curl -s -o "$BASE/as51396-ipv6.txt" \
- https://raw.githubusercontent.com/marekgrebac/as51396-list/main/as51396-ipv6.txt
-```
-
-Make executable:
-```chmod +x /usr/local/bin/update-as51396.sh```
-
-Cron (daily at 03:00):
-```0 3 * * * /usr/local/bin/update-as51396.sh >/dev/null 2>&1```
-
----
-
 ## ✅ iptables — Automatic Daily Refresh
 
 Since iptables rules are static, they must be reapplied each time the prefix list changes.  
