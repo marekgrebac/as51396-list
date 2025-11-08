@@ -168,9 +168,8 @@ Cron — update + firewall refresh every day at 03:00
 # ✅ UFW
 ---
 Create:
-```
-/usr/local/bin/update-as51396-ufw.sh
-```
+`/usr/local/bin/update-as51396-ufw.sh`
+
 Paste in the content:
 ```bash
 #!/bin/bash
