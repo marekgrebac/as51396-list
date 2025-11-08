@@ -65,14 +65,6 @@ You can download these lists directly:
 curl -s https://raw.githubusercontent.com/marekgrebac/as51396-list/main/as51396-ipv4.txt
 curl -s https://raw.githubusercontent.com/marekgrebac/as51396-list/main/as51396-ipv6.txt
 ```
-Perfect for:
-
-- firewalls  
-- IDS/IPS  
-- network monitoring  
-- abuse tooling  
-- anti-scanning rules  
-- automated blacklists / rate-limits  
 
 ---
 
