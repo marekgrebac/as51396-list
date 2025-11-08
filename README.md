@@ -2,7 +2,7 @@
 Up-to-date IPv4 & IPv6 prefix lists for **AS51396 (pfCloud)**.  
 Website: https://pfcloud.io
 
-This repository automatically fetches all announced prefixes for AS51396 every 35 minutes and generates clean, shareable text files.  
+This repository automatically fetches all announced prefixes for AS51396 every 35 minutes and generates clean, shareable text files **only if the content of the API response has changed!**  
 The lists are intended to help network operators, hosting providers, and abuse teams properly identify traffic originating from this ASN.
 
 ---
