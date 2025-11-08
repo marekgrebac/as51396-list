@@ -104,31 +104,111 @@ Cron (daily at 03:00):
 ```0 3 * * * /usr/local/bin/update-as51396.sh >/dev/null 2>&1```
 
 ---
-# ✅ iptables (IPv4 + IPv6)
----
-```
-while read p; do
-  iptables -A INPUT -s "$p" -j DROP
-done < /etc/as51396/as51396-ipv4.txt
 
-while read p; do
-  ip6tables -A INPUT -s "$p" -j DROP
-done < /etc/as51396/as51396-ipv6.txt
-```
+## ✅ iptables — Automatic Daily Refresh
 
+Since iptables rules are static, they must be reapplied each time the prefix list changes.  
+This setup refreshes the rules *automatically every day*.
+
+### 🔁 1. Daily Prefix Update + Firewall Reload Script
+
+Create:
+
+`/usr/local/bin/update-as51396-fw.sh`
+
+```bash
+#!/bin/bash
+
+BASE="/etc/as51396"
+mkdir -p "$BASE"
+
+# 1. Download fresh prefix lists
+curl -s -o "$BASE/as51396-ipv4.txt" \
+ https://raw.githubusercontent.com/marekgrebac/as51396-list/main/as51396-ipv4.txt
+
+curl -s -o "$BASE/as51396-ipv6.txt" \
+ https://raw.githubusercontent.com/marekgrebac/as51396-list/main/as51396-ipv6.txt
+
+# 2. Flush old rules
+iptables  -D INPUT -j AS51396_BLOCK 2>/dev/null
+iptables  -F AS51396_BLOCK 2>/dev/null
+iptables  -X AS51396_BLOCK 2>/dev/null
+
+ip6tables -D INPUT -j AS51396_BLOCK6 2>/dev/null
+ip6tables -F AS51396_BLOCK6 2>/dev/null
+ip6tables -X AS51396_BLOCK6 2>/dev/null
+
+# 3. Create new chains
+iptables  -N AS51396_BLOCK
+ip6tables -N AS51396_BLOCK6
+
+# 4. Populate IPv4 rules
+while read p; do
+  iptables -A AS51396_BLOCK -s "$p" -j DROP
+done < "$BASE/as51396-ipv4.txt"
+
+# 5. Populate IPv6 rules
+while read p; do
+  ip6tables -A AS51396_BLOCK6 -s "$p" -j DROP
+done < "$BASE/as51396-ipv6.txt"
+
+# 6. Attach chains to INPUT
+iptables  -A INPUT -j AS51396_BLOCK
+ip6tables -A INPUT -j AS51396_BLOCK6
+```
+Make executable:
+```bash
+chmod +x /usr/local/bin/update-as51396-fw.sh
+```
+Cron — update + firewall refresh every day at 03:00
+```bash
+0 3 * * * /usr/local/bin/update-as51396-fw.sh >/dev/null 2>&1
+```
 ---
 # ✅ UFW
 ---
-IPv4
+Create:
 ```
+/usr/local/bin/update-as51396-ufw.sh
+```
+Paste in the content:
+```bash
+#!/bin/bash
+
+BASE="/etc/as51396"
+mkdir -p "$BASE"
+
+# 1. Download fresh lists
+curl -s -o "$BASE/as51396-ipv4.txt" \
+ https://raw.githubusercontent.com/marekgrebac/as51396-list/main/as51396-ipv4.txt
+
+curl -s -o "$BASE/as51396-ipv6.txt" \
+ https://raw.githubusercontent.com/marekgrebac/as51396-list/main/as51396-ipv6.txt
+
+# 2. Remove old UFW rules
+ufw --force reset
+
+# 3. Reload defaults
+ufw default allow incoming
+ufw default allow outgoing
+
+# 4. Apply block rules
 while read p; do
   ufw deny from "$p"
-done < /etc/as51396/as51396-ipv4.txt
-```
-IPv6
-```
-while read p; do
-  ip6tables -A INPUT -s "$p" -j DROP
-done < /etc/as51396/as51396-ipv6.txt
-```
+done < "$BASE/as51396-ipv4.txt"
 
+while read p; do
+  ufw deny from "$p"
+done < "$BASE/as51396-ipv6.txt"
+
+# 5. Enable UFW (non-interactive)
+yes | ufw enable
+```
+Make executable:
+```bash
+chmod +x /usr/local/bin/update-as51396-ufw.sh
+```
+Cron — update + firewall refresh every day at 03:00
+```bash
+5 3 * * * /usr/local/bin/update-as51396-ufw.sh >/dev/null 2>&1
+```
