@@ -109,3 +109,33 @@ Make executable:
 
 Cron (daily at 03:00):
 ```0 3 * * * /usr/local/bin/update-as51396.sh >/dev/null 2>&1```
+
+---
+# ✅ iptables (IPv4 + IPv6)
+---
+```
+while read p; do
+  iptables -A INPUT -s "$p" -j DROP
+done < /etc/as51396/as51396-ipv4.txt
+
+while read p; do
+  ip6tables -A INPUT -s "$p" -j DROP
+done < /etc/as51396/as51396-ipv6.txt
+```
+
+---
+# ✅ UFW
+---
+IPv4
+```
+while read p; do
+  ufw deny from "$p"
+done < /etc/as51396/as51396-ipv4.txt
+```
+IPv6
+```
+while read p; do
+  ip6tables -A INPUT -s "$p" -j DROP
+done < /etc/as51396/as51396-ipv6.txt
+```
+
