@@ -80,8 +80,6 @@ Below are simple examples for automatically blocking or isolating traffic from A
 Since iptables rules are static, they must be reapplied each time the prefix list changes.  
 This setup refreshes the rules *automatically every day*.
 
-### 🔁 1. Daily Prefix Update + Firewall Reload Script
-
 Create:
 
 `/usr/local/bin/update-as51396-fw.sh`
